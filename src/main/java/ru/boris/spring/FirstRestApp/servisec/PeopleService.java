@@ -7,6 +7,7 @@ import ru.boris.spring.FirstRestApp.models.Person;
 import ru.boris.spring.FirstRestApp.repositories.PeopleRepository;
 import ru.boris.spring.FirstRestApp.util.PersonNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,16 @@ public class PeopleService {
     public Person findOne(int id) {
         Optional<Person> foundPerson = peopleRepository.findById(id);
         return foundPerson.orElseThrow(PersonNotFoundException::new);
+    }
+
+    @Transactional
+    public void save (Person person) {
+        enrichPerson(person);
+        peopleRepository.save(person);
+    }
+    private void enrichPerson(Person person) {
+        person.setCreatedAt(LocalDateTime.now());
+        person.setUpdatedAt(LocalDateTime.now());
+        person.setCreatedWhy("ADMIN");
     }
 }
